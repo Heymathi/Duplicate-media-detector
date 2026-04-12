@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "similarity": "> 95%",
+        "files": [
+            {
+                "path": "SampleDataset\\duplicate_copy_video.mp4",
+                "name": "duplicate_copy_video.mp4",
+                "keep": true
+            },
+            {
+                "path": "SampleDataset\\original_video.mp4",
+                "name": "original_video.mp4",
+                "keep": false
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "similarity": "> 95%",
+        "files": [
+            {
+                "path": "SampleDataset\\image_exact_copy_0.jpg",
+                "name": "image_exact_copy_0.jpg",
+                "keep": true
+            },
+            {
+                "path": "SampleDataset\\image_original_0.jpg",
+                "name": "image_original_0.jpg",
+                "keep": false
+            }
+        ]
+    }
+]

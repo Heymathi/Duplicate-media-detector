@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate Media Detector</title>
+    <!-- Google Fonts for Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar glass-panel">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h2>EchoScan</h2>
+            </div>
+
+            <div class="settings-section">
+                <h3>Settings</h3>
+
+                <div class="setting-group">
+                    <label for="threshold">Similarity Threshold: <span id="threshold-val">95%</span></label>
+                    <input type="range" id="threshold" min="80" max="100" value="95" step="1">
+                    <p class="setting-desc">Higher values require stricter, near-exact matches.</p>
+                </div>
+
+                <div class="setting-group toggle-group">
+                    <label class="toggle">
+                        <input type="checkbox" id="auto-remove">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Auto-Remove Duplicates</span>
+                </div>
+
+                <div class="setting-group">
+                    <button id="theme-toggle-btn" class="secondary-btn">🎨 Switch Theme</button>
+                    <div id="theme-label"
+                        style="text-align: center; margin-top: 8px; font-size: 0.85rem; color: var(--text-muted);">
+                        Current: Cyber Blue</div>
+                </div>
+            </div>
+
+            <div class="scan-action">
+                <button id="start-scan-btn" class="primary-btn pulse">Start Scan</button>
+                <button id="help-btn" class="secondary-btn" style="margin-top: 15px;">❔ Help Center</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="app-header">
+                <h1>Duplicate Media Detector</h1>
+                <p>Powered by ResNet50 Deep Learning</p>
+            </header>
+
+            <!-- JSON Loading Area -->
+            <div class="upload-area dashboard-panel" id="upload-area">
+                <div class="upload-icon">📂</div>
+                <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">Select Directory to Scan</h3>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Click here or drag 'n drop a folder to scan for
+                    duplicates</p>
+                <input type="file" id="json-upload" accept=".json" style="display: none;">
+                <div id="selected-path" class="selected-path hidden"></div>
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div class="stats-container">
+                <div class="stat-card glass-panel fade-in" style="animation-delay: 0.1s;">
+                    <div class="stat-value" id="stat-scanned">0</div>
+                    <div class="stat-label">Files Scanned</div>
+                </div>
+                <div class="stat-card glass-panel fade-in" style="animation-delay: 0.2s;">
+                    <div class="stat-value text-gradient" id="stat-groups">0</div>
+                    <div class="stat-label">Duplicate Groups</div>
+                </div>
+                <div class="stat-card glass-panel fade-in" style="animation-delay: 0.3s;">
+                    <div class="stat-value text-danger" id="stat-redundant">0</div>
+                    <div class="stat-label">Redundant Files</div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section hidden" id="results-section">
+                <h2>Scan Results</h2>
+                <div class="results-grid" id="results-grid">
+                    <!-- Duplicate groups will be dynamically injected here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Fullscreen Media Modal -->
+    <div id="media-modal" class="modal hidden">
+        <span class="close-modal" id="close-modal">&times;</span>
+        <div class="modal-content-wrapper" id="modal-content"></div>
+    </div>
+
+    <!-- Help Center Modal -->
+    <div id="help-modal" class="modal hidden">
+        <span class="close-help" id="close-help">&times;</span>
+        <div class="help-content glass-panel"
+            style="background: var(--bg-panel); color: var(--text-main); padding: 3rem; max-width: 600px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 1005; position: relative;">
+            <h2 class="text-gradient" style="margin-bottom: 1.5rem; font-size: 2.2rem;">Help Center</h2>
+            <div class="faq-item">
+                <h3 style="color: var(--accent); margin-bottom: 0.5rem; font-size: 1.2rem;">🧠 How does it detect
+                    duplicates?</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.8rem; line-height: 1.6;">Unlike basic file scanners
+                    that check exact file sizes, EchoScan uses a deep learning neural network (ResNet50). It actually
+                    "looks" at the visual features of your media, allowing it to find duplicates even if they are
+                    renamed, cropped, or recolored.</p>
+            </div>
+            <div class="faq-item">
+                <h3 style="color: var(--accent); margin-bottom: 0.5rem; font-size: 1.2rem;">🎚️ What is the 'Threshold'
+                    slider?</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.8rem; line-height: 1.6;">The similarity threshold
+                    defines how strict the AI should be. At <strong>99%</strong>, only exact, pixel-perfect images
+                    match. At <strong>80%</strong>, the AI will group images together that merely look similar (like
+                    taking a burst of photos).</p>
+            </div>
+            <div class="faq-item">
+                <h3 style="color: var(--accent); margin-bottom: 0.5rem; font-size: 1.2rem;">🗑️ Is Auto-Remove safe?
+                </h3>
+                <p style="color: var(--text-muted); line-height: 1.6;">Yes! Auto-remove permanently deletes the trailing
+                    redundant copies in any group the AI flags, but it <strong>always</strong> keeps the main original
+                    file completely safe untouched.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot-widget" class="chatbot-container">
+        <div id="chatbot-window" class="chatbot-window hidden glass-panel">
+            <div class="chatbot-header">
+                <h3>Echo AI Assistant</h3>
+                <span id="close-chatbot" class="close-chatbot">&times;</span>
+            </div>
+            <div id="chatbot-messages" class="chatbot-messages">
+                <div class="message bot-message">Hello! I'm your Echo AI Assistant. How can I help you use the app
+                    today?</div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" id="chatbot-input" placeholder="Type your question here...">
+                <button id="chatbot-send">Send</button>
+            </div>
+        </div>
+        <button id="chatbot-toggle" class="chatbot-toggle-btn">💬</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
