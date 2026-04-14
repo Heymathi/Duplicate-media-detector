@@ -1,39 +1,44 @@
-# Duplicate Image and Video Detector (Machine Learning Based)
+# VisionAI | Intelligent Duplicate Media Detector
 
-This project uses deep learning to detect duplicate or near-duplicate images and videos in a given directory.
+A premium, machine learning-powered application to detect and remove duplicate (or near-duplicate) images and videos using **ResNet50** feature extraction.
 
-Instead of relying on simple file hashes (like MD5) or basic perceptual hashes, this tool uses **ResNet50**, a powerful Convolutional Neural Network (CNN) pre-trained on the ImageNet dataset. By extracting deep feature embeddings, it can find visually similar media even if they have been resized, slightly compressed, or have minor modifications.
+## ✨ Features
 
-## How it Works (Machine Learning Concepts)
+- **ML-Driven Detection**: Uses deep learning embeddings (CNN) instead of simple pixel matching. Finds images that were resized, compressed, or slightly modified.
+- **Video Support**: Scans videos by frame sampling and temporal averaging (Mean Pooling).
+- **Stunning UI**: Modern dark-mode interface with glassmorphism and real-time scanning feedback.
+- **Smart Grouping**: Automatically identifies the "original" and flags redundant copies for deletion.
+- **Configurable Confidence**: Adjust the AI threshold to find exact duplicates or loose visual matches.
 
-1. **Feature Extraction (Images)**: The script passes images through a pre-trained ResNet50 model. We remove the final classification layer to get a dense, fully-connected feature vector (an "embedding") that represents the visual semantics of the image.
-2. **Feature Extraction (Videos)**: For videos, the script extracts 1 frame per second. It computes the CNN feature vector for each extracted frame and then computes the mean embedding for the whole video (Mean Pooling). 
-3. **Similarity Calculation**: It compares the feature vectors of all pairs using **Cosine Similarity**. If the similarity between two files is greater than a specified threshold (default: 0.95), they are considered duplicates.
-4. **Removal**: Optionally, the tool can automatically keep one instance and delete the redundant duplicates.
+## 🚀 Getting Started
 
-## Prerequisites
-
-You need Python 3.8+ installed on your system.
-
-Install the required dependencies:
+### 1. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-## Usage
-
-Run the scanner to find duplicates (dry-run):
+### 2. Generate Sample Data (Optional)
+To test the detector immediately, run the sample generator:
 ```bash
-python main.py -d "path/to/your/folder"
+python generate_dataset.py
 ```
 
-To automatically remove duplicates (keeping the first one in each group):
+### 3. Launch the Application
+Start the Flask backend and UI:
 ```bash
-python main.py -d "path/to/your/folder" -r
+python app.py
 ```
+Visit **http://127.0.0.1:5000** in your browser.
 
-### Arguments
+## 🧠 Machine Learning Concepts
 
-- `-d`, `--directory`: The directory you want to scan for duplicates (recursive).
-- `-t`, `--threshold`: The similarity threshold for duplicates. Default is `0.95`. Decrease it to find "looser" matches, or increase to `0.99` for strict near-exact visual matches.
-- `-r`, `--remove`: If passed, the script will delete duplicate files (it always preserves the first instance found).
+1. **Feature Extraction**: The system uses a pre-trained **ResNet50** network. We strip the classification head and use the 2048-dimensional "bottleneck" vector as a visual fingerprint.
+2. **Cosine Similarity**: Comparing high-dimensional vectors. A similarity of 1.0 means the visual features are identical in the latent space.
+3. **Video Frame Sampling**: For videos, we extract features at 1 FPS and average them to create a single "video embedding" representing the entire clip.
+
+## 🖥️ UI Usage
+1. Enter the full path of the folder you want to scan.
+2. Adjust the **AI Confidence Threshold** (0.95 is recommended for high accuracy).
+3. Click **Start Scan**.
+4. Review the results. The system keeps one instance (marked with ✓) and flags the rest for removal (marked with ✕).
+5. Click **Clean Selected Duplicates** to delete the redundant files.
