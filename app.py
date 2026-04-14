@@ -6,9 +6,13 @@ from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 from detector import DuplicateDetector
 
+
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    
 @app.after_request
 def add_cors_headers(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
